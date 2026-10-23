@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
+  import { base } from '$app/paths';
   import { type Session } from '@supabase/supabase-js';
   import { supabase, getSession, onAuthStateChange, signOut } from '$lib/supabase';
   import Swal from 'sweetalert2';
@@ -16,7 +17,12 @@
     sidebarOpen = !sidebarOpen;
   };
 
-  const isActive = (path: string) => $page.url.pathname === path;
+  const isActive = (path: string) => $page.url.pathname === `${base}${path}`;
+
+  const routePath = () => {
+    const p = $page.url.pathname;
+    return base && p.startsWith(base) ? p.slice(base.length) || '/' : p;
+  };
 
   const handleLogout = async () => {
     const confirmed = await Swal.fire({
@@ -33,7 +39,7 @@
 
     if (confirmed.isConfirmed) {
       await signOut();
-      await goto('/login');
+      await goto(`${base}/login`);
     }
   };
 
@@ -50,35 +56,35 @@
       await fetchUserRole(session.user.id);
     }
 
-    const path = $page.url.pathname;
+    const path = routePath();
     if (!session && path !== '/login') {
-      await goto('/login');
+      await goto(`${base}/login`);
     } else if (session && path === '/login') {
-      await goto('/barcode');
+      await goto(`${base}/barcode`);
     }
   };
 
   onMount(() => {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js');
+      navigator.serviceWorker.register(`${base}/service-worker.js`);
     }
 
     checkAuth();
 
     subscription = onAuthStateChange((event: string, newSession: Session | null) => {
       session = newSession ?? null;
-      const path = $page.url.pathname;
+      const path = routePath();
 
       if (newSession) {
         fetchUserRole(newSession.user.id);
       }
 
       if (event === 'SIGNED_OUT') {
-        goto('/login');
+        goto(`${base}/login`);
       } else if (!newSession && path !== '/login') {
-        goto('/login');
+        goto(`${base}/login`);
       } else if (newSession && path === '/login') {
-        goto('/barcode');
+        goto(`${base}/barcode`);
       }
     });
 
@@ -106,7 +112,7 @@
     >
       <div class="flex items-center justify-between h-16 px-4 border-b border-gray-100">
         <h1 class="text-xl font-bold text-gray-900">Barcode</h1>
-        {#if $page.url.pathname !== '/login'}
+        {#if routePath() !== '/login'}
           <button
             onclick={toggleSidebar}
             class="text-gray-600 hover:text-gray-900 md:hidden"
@@ -121,7 +127,7 @@
 
       <nav class="mt-4 px-3 space-y-1">
         <a
-          href="/barcode"
+          href={`${base}/barcode`}
           class={`
             flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors
             ${isActive('/barcode') ? 'bg-blue-100 text-blue-600' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}
@@ -133,7 +139,7 @@
           Barcode
         </a>
         <a
-          href="/detail"
+          href={`${base}/detail`}
           class={`
             flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors
             ${isActive('/detail') ? 'bg-blue-100 text-blue-600' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}
@@ -145,7 +151,7 @@
           Detail
         </a>
         <a
-          href="/history"
+          href={`${base}/history`}
           class={`
             flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors
             ${isActive('/history') ? 'bg-blue-100 text-blue-600' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}
@@ -158,7 +164,7 @@
         </a>
         {#if userRole === 'administrator'}
           <a
-            href="/pengaturan"
+            href={`${base}/pengaturan`}
             class={`
               flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors
               ${isActive('/pengaturan') ? 'bg-blue-100 text-blue-600' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}`}
@@ -174,7 +180,7 @@
     </aside>
 
     <!-- Sidebar overlay mobile -->
-    {#if sidebarOpen && $page.url.pathname !== '/login'}
+    {#if sidebarOpen && routePath() !== '/login'}
       <div
         role="button"
         aria-label="Tutup sidebar"
@@ -192,7 +198,7 @@
       <!-- Topbar -->
       <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 shrink-0">
         <div class="flex items-center gap-2">
-          {#if $page.url.pathname !== '/login'}
+          {#if routePath() !== '/login'}
             <button
               onclick={toggleSidebar}
               class="text-gray-600 hover:text-gray-900 md:hidden"

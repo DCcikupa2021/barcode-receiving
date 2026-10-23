@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { base } from '$app/paths';
   import { signIn } from '$lib/supabase';
   import Swal from 'sweetalert2';
 
@@ -45,7 +46,7 @@
       position: 'top-end'
     });
 
-    await goto('/barcode');
+    await goto(`${base}/barcode`);
   };
 </script>
 

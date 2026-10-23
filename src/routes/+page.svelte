@@ -1,7 +1,8 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { base } from '$app/paths';
 
-  goto('/barcode');
+  goto(`${base}/barcode`);
 </script>
 
 <div class="flex h-screen items-center justify-center bg-gray-50">
