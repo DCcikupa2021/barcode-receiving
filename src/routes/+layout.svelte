@@ -3,6 +3,7 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { base } from '$app/paths';
+  import '../app.css';
   import { type Session } from '@supabase/supabase-js';
   import { supabase, getSession, onAuthStateChange, signOut } from '$lib/supabase';
   import Swal from 'sweetalert2';
