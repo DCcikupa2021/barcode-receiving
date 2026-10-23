@@ -1,8 +1,13 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { base } from '$app/paths';
+  import { getSession } from '$lib/supabase';
 
-  goto(`${base}/barcode`);
+  onMount(async () => {
+    const session = await getSession();
+    await goto(session ? `${base}/barcode` : `${base}/login`, { replaceState: true });
+  });
 </script>
 
 <div class="flex h-screen items-center justify-center bg-gray-50">
