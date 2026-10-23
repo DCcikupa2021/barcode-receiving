@@ -105,6 +105,7 @@
   </div>
 {:else}
   <div class="flex h-screen bg-gray-50">
+    {#if routePath() !== '/login'}
     <!-- Sidebar -->
     <aside
       class="fixed inset-y-0 left-0 z-20 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out
@@ -193,9 +194,11 @@
         class="fixed inset-0 z-10 bg-black opacity-50 transition-opacity duration-300 md:hidden"
       ></div>
     {/if}
+    {/if}
 
     <!-- Main content -->
-    <div class="flex-1 flex flex-col overflow-hidden md:ml-64">
+    <div class="flex-1 flex flex-col overflow-hidden {routePath() === '/login' ? '' : 'md:ml-64'}">
+      {#if routePath() !== '/login'}
       <!-- Topbar -->
       <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 shrink-0">
         <div class="flex items-center gap-2">
@@ -224,6 +227,7 @@
           </button>
         </div>
       </header>
+      {/if}
 
       <!-- Page content -->
       <main class="flex-1 overflow-y-auto p-4">
