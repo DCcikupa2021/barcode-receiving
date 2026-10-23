@@ -27,7 +27,7 @@ Referensi: `PRD.md` (Step 0–10). Tabel ini mencatat status implementasi per st
 | 8 | Halaman `/detail` (baca hanya `added_barcodes`) (Step 4) | Selesai | `src/routes/detail/+page.svelte` — tabel read-only `added_barcodes`, urut `created_at` DESC, kolom Item No | Barcode No | Description | Category Name |
 | 9 | Halaman `/history` (daftar + Hapus konfirmasi SweetAlert2) (Step 5) | Selesai | `src/routes/history/+page.svelte` — kolom Waktu | User | Item No | Barcode No | Description | Category Name | Aksi (Hapus), konfirmasi SweetAlert2 sebelum hapus |
 | 10 | Seed 3 akun demo di Supabase Auth + `profiles` (Step 1 lanjutan) | Selesai (parsial) | `administrator@mitra10.com` / `admin123` / role `administrator` — dibuat manual di Supabase Auth + profil di tabel `profiles`. `admin@` dan `leader@` buat lewat menu `/pengaturan` di aplikasi. |
-| 11 | Commit ke GitHub | Belum | Belum ada commit untuk step 0–3. Perlu `git add`, `git commit`, `git push` |
+| 11 | Commit ke GitHub | Selesai (lokal) | `git init`, `git add`, `git commit` ✅ (29 file, 5430 insertions). Repo GitHub belum dibuat — perlu dibuat manual di github.com dengan nama `barcode-receiving`, lalu `git remote add origin <url>` dan `git push -u origin main`. |
 | 12 | Verifikasi akhir end-to-end (Step 7) | Belum | Alur manual: login → search → pilih description → add barcode → muncul di Detail → history ada user+tanggal+jam → hapus dari history |
 | 13 | Import dari `Report All Barcode (3).xlsx` ke Supabase `barcode_items` | Selesai | 244.320 baris data diproses (Row 6+), 244.318 tersimpan, 2 gagal (`barcode_no` kosong), 1 baris kosong di akhir dilewati. `barcode_items` now terisi 244.318 row. |
 
