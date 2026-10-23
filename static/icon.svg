@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#g)" rx="220"/>
+  <!-- Frame pemindai barcode -->
+  <rect x="240" y="240" width="544" height="544" fill="none" stroke="#ffffff" stroke-width="14" rx="60" stroke-linecap="round"/>
+  <path d="M300 300 L360 300 M300 300 L300 360" stroke="#ffffff" stroke-width="14" stroke-linecap="round" opacity="0.9"/>
+  <path d="M724 300 L664 300 M724 300 L724 360" stroke="#ffffff" stroke-width="14" stroke-linecap="round" opacity="0.9"/>
+  <path d="M300 724 L360 724 M300 724 L300 664" stroke="#ffffff" stroke-width="14" stroke-linecap="round" opacity="0.9"/>
+  <path d="M724 724 L664 724 M724 724 L724 664" stroke="#ffffff" stroke-width="14" stroke-linecap="round" opacity="0.9"/>
+  <!-- Batang barcode -->
+  <g fill="#ffffff" fill-opacity="0.92">
+    <rect x="300" y="560" width="22" height="180" rx="6"/>
+    <rect x="340" y="540" width="22" height="220" rx="6"/>
+    <rect x="380" y="590" width="22" height="120" rx="6"/>
+    <rect x="420" y="520" width="22" height="260" rx="6"/>
+    <rect x="460" y="610" width="22" height="80" rx="6"/>
+    <rect x="500" y="500" width="22" height="300" rx="6"/>
+    <rect x="540" y="580" width="22" height="140" rx="6"/>
+    <rect x="580" y="510" width="22" height="240" rx="6"/>
+    <rect x="620" y="550" width="22" height="180" rx="6"/>
+    <rect x="660" y="500" width="22" height="300" rx="6"/>
+    <rect x="700" y="570" width="22" height="160" rx="6"/>
+  </g>
+</svg>

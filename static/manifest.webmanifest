@@ -1,0 +1,14 @@
+{
+  "name": "Barcode Receiving | Mitra10",
+  "short_name": "Barcode Receiving",
+  "description": "Aplikasi pencarian dan pencatatan barcode internal Mitra10",
+  "start_url": "/barcode",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

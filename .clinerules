@@ -1,0 +1,52 @@
+# Project Rules — barcode-receiving
+
+## Ringkasan
+Aplikasi internal Mitra10: search barcode (Supabase) + Add Barcode + history. PRD lengkap di `PRD.md` — baca dulu sebelum kerja.
+
+## Stack
+- **SvelteKit (adapter-static, SPA mode)** + TypeScript + Tailwind CSS + **SweetAlert2 (lokal, bundled)** + `@supabase/supabase-js`
+- Routing rute `/login`, `/barcode`, `/detail`, `/history` pakai SvelteKit file-based; proteksi auth di root layout (redirect ke `/login`).
+- **PWA**: manifest.webmanifest + service worker + icon + theme-color; installable, offline shell minimal.
+- Notifikasi, toast, dan konfirmasi (termasuk hapus di history) **wajib SweetAlert2** — dilarang pakai `alert()`/`confirm()`/`prompt()` browser.
+- Jangan ganti stack/dependencies besar tanpa diskusi dulu.
+- Env: `.env` lokal dengan `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`. Jangan commit secret, jangan hardcode key di source.
+
+## Data rules (WAJIB)
+- Sumber data: `Report All Barcode (3).xlsx`, sheet `Report All Barcode`. **Row 5 = header, data = Row 6 ke bawah. Jangan ubah file excel ini.**
+- Header Excel punya spasi trailing (`Item No `, `Barcode No `, `Show for Item `). Kolom DB ditulis tanpa spasi: `item_no`, `barcode_no`, `show_for_item`.
+- Tabel Supabase:
+  - `barcode_items` — master dari Excel, UNIQUE pada `barcode_no`. Read-only dari app (tanpa CRUD lewat UI).
+  - `added_barcodes` — hasil tombol "Add Barcode", UNIQUE pada `barcode_no`, wajib isi `added_by` + `created_at`.
+- `barcode_no` tidak boleh duplikat di kedua tabel — selalu validasi sebelum insert.
+- Data hasil Add Barcode **tidak pernah** ditulis ke `barcode_items`.
+- Tombol "Add Barcode": `item_no`/`description`/`category_name` auto-copy dari baris hasil pencarian (baris pertama), user hanya isi `barcode_no`. Beberapa baris pending boleh sekaligus → **satu tombol "Simpan" menyimpan semua pending sekaligus**; 1 baris gagal validasi = seluruh batch batal, lapor via SweetAlert2.
+- Hapus di history: semua role boleh, konfirmasi via SweetAlert2.
+- Import script (`npm run import`): Row 5 header, data Row 6+, upsert + laporan read/saved/gagal — tidak boleh ada row kelewat (dijalankan manual, bukan runtime app).
+- Halaman Detail hanya baca `added_barcodes`, tidak pernah `barcode_items`.
+
+## Autentikasi
+- Supabase Auth (email+password). 3 akun: administrator@mitra10.com, admin@mitra10.com, leader@mitra10.com — password `admin123` (hanya untuk seed/setup, jangan hardcode di kode login).
+- Semua halaman selain `/login` wajib protected route.
+
+## UI rules
+- Tampilan PWA modern: halus, lega, micro-interaction singkat (transisi sidebar, suggestion list, hover row) — jangan kaku/ketinggalan zaman.
+- Sidebar expand/collapse dengan ikon hamburger 3 baris. Menu: Barcode, Detail, History.
+- Halaman Barcode: searchbox (debounce ~250ms, query on-keystroke) → suggestion list `description` → pilih → tabel `Item No | Barcode No | Description | Category Name` → "Add Barcode" nambah baris pending → satu tombol "Simpan" simpan semua.
+- History kolom: Waktu, User, Item No, Barcode No, Description, Category Name, Aksi (Hapus).
+- Jangan ubah struktur header tabel / label tanpa update `PRD.md`.
+- Copy/UI text bahasa Indonesia yang wajar, singkat.
+
+## Kode
+- Kredensial & query Supabase lewat satu modul `$lib/supabase.ts`, jangan bikin client duplikat.
+- Script dalam `.svelte` pakai `lang="ts"`; TS strict, no `any` kecuali terpaksa.
+- Komentar hanya untuk hal non-obvious.
+- Jangan commit file besar/hasil build (`dist/`, `node_modules/`).
+
+## Verifikasi sebelum selesai
+- `npm run build` harus lolos (type check tanpa error).
+- Cek manual alur: login → search → pilih description → add barcode → muncul di Detail → history ada user+tanggal+jam → hapus dari history works.
+
+## Alur Kerja (Wajib)
+- Sebelum mulai kerja, baca terlebih dahulu `PRD.md` dan `progress.md` di root project untuk memahami scope dan status terkini.
+- Setelah menyelesaikan pekerjaan, update `progress.md` dan `log-audit.md` sesuai situasi terkini (selesai/belum, bug dan perbaikan, file yang diubah).
+- Jangan mengerjakan step baru tanpa menyelesaikan dan mengupdate progress dari step sebelumnya.

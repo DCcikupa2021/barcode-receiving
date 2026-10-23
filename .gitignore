@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# SvelteKit
+.svelte-kit/
+build/
+
+# Environment variables (contains secrets - never commit)
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large data files (not part of source)
+Report All Barcode (3).xlsx
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
