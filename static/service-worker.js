@@ -1,4 +1,4 @@
-const CACHE_NAME = 'barcode-receiving-v1';
+const CACHE_NAME = 'barcode-receiving-v2';
 const SHELL_URLS = [
   '/',
   '/login',

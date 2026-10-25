@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { supabase } from '$lib/supabase';
   import Swal from 'sweetalert2';
+  import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 
   interface AddedBarcode {
     id: string;
@@ -71,8 +72,73 @@
     }
   }
 
+  /** Terapkan perubahan realtime ke state lokal tanpa refresh halaman. */
+  function applyRealtimeChange(payload: RealtimePostgresChangesPayload<AddedBarcode>) {
+    try {
+      if (payload.eventType === 'INSERT') {
+        const row = payload.new as AddedBarcode;
+        if (!row?.id || data.some((r) => r.id === row.id)) return;
+        // urutan halaman ini = created_at descending (sama seperti loadData)
+        data = [row, ...data].sort(
+          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+      } else if (payload.eventType === 'UPDATE') {
+        const row = payload.new as AddedBarcode;
+        if (!row?.id) return;
+        data = data.map((r) => (r.id === row.id ? row : r));
+      } else if (payload.eventType === 'DELETE') {
+        const oldId = payload.old?.id;
+        if (!oldId) {
+          // payload.old tidak membawa id (replica identity) -> muat ulang manual
+          loadData();
+          return;
+        }
+        // idempoten: baris yang sudah dihapus oleh handleDelete tidak diapa-apakan
+        data = data.filter((r) => r.id !== oldId);
+      }
+    } catch (err) {
+      console.warn('[history] Gagal menerapkan perubahan realtime, memuat ulang data', err);
+      loadData();
+    }
+  }
+
   onMount(() => {
     loadData();
+
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+
+    try {
+      channel = supabase
+        .channel('history-ch')
+        .on<AddedBarcode>(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'added_barcodes' },
+          (payload) => applyRealtimeChange(payload)
+        )
+        .subscribe((status) => {
+          const state = status as string;
+          if (state === 'SUBSCRIBED') return;
+          if (state === 'CHANNEL_ERROR' || state === 'TIMED_OUT' || state === 'CLOSED') {
+            console.warn(
+              `[history] Realtime subscription ${state} — fallback ke muat data manual.`
+            );
+            // Halaman tetap jalan tanpa realtime; muat ulang agar data tetap akurat.
+            loadData();
+          }
+        });
+    } catch (err) {
+      console.warn('[history] Gagal membuat channel realtime, fallback ke muat data manual', err);
+    }
+
+    return () => {
+      if (channel) {
+        try {
+          supabase.removeChannel(channel);
+        } catch (err) {
+          console.warn('[history] Gagal remove channel realtime', err);
+        }
+      }
+    };
   });
 </script>
 
@@ -103,7 +169,7 @@
             </tr>
           </thead>
           <tbody>
-            {#each data as row}
+            {#each data as row (row.id)}
               <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                 <td class="py-3 text-gray-700 font-mono text-sm">
                   {new Date(row.created_at).toLocaleString('id-ID', {
