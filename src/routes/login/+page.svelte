@@ -101,7 +101,7 @@
       </form>
 
       <div class="mt-6 text-center text-sm text-gray-500">
-        Akun demo: administrator@mitra10.com / admin123
+        Mitra10 - DC Cikupa Apps
       </div>
     </div>
   </div>

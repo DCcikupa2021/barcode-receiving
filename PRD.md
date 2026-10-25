@@ -37,7 +37,7 @@ Aplikasi web internal Mitra10 untuk pencarian barcode dari data master (Excel â†
 ## 3. Autentikasi (Step 1)
 
 - Pakai **Supabase Auth** (email + password).
-- 3 akun (password semua: `admin123`):| Email                         | Role              |
+- 3 akun (password: `[REDACTED â€” lihat password manager]`):| Email                         | Role              |
   | ----------------------------- | ----------------- |
   | `administrator@mitra10.com` | `administrator` |
   | `admin@mitra10.com`         | `admin`         |

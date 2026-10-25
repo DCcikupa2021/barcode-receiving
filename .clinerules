@@ -25,7 +25,7 @@ Aplikasi internal Mitra10: search barcode (Supabase) + Add Barcode + history. PR
 - Halaman Detail hanya baca `added_barcodes`, tidak pernah `barcode_items`.
 
 ## Autentikasi
-- Supabase Auth (email+password). 3 akun: administrator@mitra10.com, admin@mitra10.com, leader@mitra10.com — password `admin123` (hanya untuk seed/setup, jangan hardcode di kode login).
+- Supabase Auth (email+password). 3 akun: administrator@mitra10.com, admin@mitra10.com, leader@mitra10.com — password `[REDACTED — lihat password manager]` (hanya untuk seed/setup, jangan hardcode di kode login).
 - Semua halaman selain `/login` wajib protected route.
 
 ## UI rules
